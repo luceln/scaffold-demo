@@ -1,6 +1,11 @@
 // app 模块。工程级约定（compileSdk/minSdk/targetSdk/bytecode/compose）
 // 全部在 build-logic 的 convention 里，这里只写模块特有信息。
 plugins {
+    // 真实插件在前：把 AGP / compose 编译器插件的实现类拉上主工程插件 classpath
+    // （convention 里对它们是 compileOnly，运行期可见性来自这里）
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
+    // 工程级约定
     alias(libs.plugins.toolsmith.android.application)
     alias(libs.plugins.toolsmith.android.application.compose)
     alias(libs.plugins.kotlin.serialization)

@@ -59,6 +59,10 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 
 [plugins]
+# 真实插件：必须在 app 的 plugins 块里显式请求，把实现类拉上主工程
+# 插件 classpath（convention 里是 compileOnly，运行期靠这里）
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 # convention 插件（注册在 build-logic，随仓库走，版本无意义）
