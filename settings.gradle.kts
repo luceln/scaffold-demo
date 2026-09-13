@@ -5,6 +5,9 @@ pluginManagement {
     // 而不是在模块里 apply org.jetbrains.kotlin.android（AGP 9 已移除该插件）。
     includeBuild("build-logic")
     repositories {
+        // 国内镜像前置：阿里云 gradle-plugin / google，官方源在后兜底
+        maven("https://maven.aliyun.com/repository/gradle-plugin")
+        maven("https://maven.aliyun.com/repository/google")
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -20,6 +23,9 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
+        // 国内镜像前置：阿里云 google / public，官方源在后兜底
+        maven("https://maven.aliyun.com/repository/google")
+        maven("https://maven.aliyun.com/repository/public")
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
