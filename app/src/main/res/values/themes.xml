@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose 应用只需一个启动前的窗口主题；UI 全部由 MaterialTheme 接管。
+         主题名固定 Theme.App（连字符不能进资源名，见模板 README 坑 #3） -->
+    <style name="Theme.App" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

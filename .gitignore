@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+
+# Android Studio / IDEA —— 工程从 settings.gradle.kts 导入，不提交 IDE 状态
+.idea/
+*.iml
+captures/
+.kotlin/
+
+# 机器相关配置（sdk.dir 每台机器不同），绝不能提交
+local.properties
+
+# 签名密钥：绝不入库（模板 README「发布」一节说明如何管理）
+*.jks
+*.keystore
+keystore.properties
+
+# 构建产物
+*.apk
+*.aab
+*.dex
+
+# 运行期日志与崩溃记录
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

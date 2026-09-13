@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- app_name 由模板变量渲染（kebab-case 原样展示，显示名允许连字符） -->
+    <string name="app_name">scaffold-demo</string>
+    <string name="load_failed">加载失败，请检查网络后重试</string>
+</resources>

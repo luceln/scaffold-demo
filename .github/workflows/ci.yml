@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  check:
+    # ubuntu runner 预装 Android SDK，无需额外安装步骤
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 安装 JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 配置 Gradle 缓存
+        uses: gradle/actions/setup-gradle@v5
+
+      # 与本地 make check 同一语义：lint → test → build
+      - name: 检查与构建
+        run: |
+          ./gradlew --console=plain --no-daemon spotlessCheck :app:lintDebug testDebugUnitTest assembleDebug
+
+      # 编译产物上传：run 页 Summary 底部 Artifacts 区下载（保留 90 天，需登录 GitHub）
+      - name: 上传 debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

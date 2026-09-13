@@ -1,0 +1,66 @@
+# ============================================================
+# 版本目录 —— 单一事实源（§11.4 约定集中配置）
+#
+# 所有版本收割自 Google 官方生产参考工程 Now in Android（main 分支，
+# 2026-09-13），收割记录与"为什么不用更新的版本"逐条理由见仓库根 README。
+# 升级动作 = 只改本文件，不改任何构建脚本。
+# ============================================================
+
+[versions]
+androidGradlePlugin = "9.3.2"
+androidxActivity = "1.9.3"
+androidxComposeBom = "2025.09.01"
+androidxCore = "1.15.0"
+androidxLifecycle = "2.10.0"
+androidDesugarJdkLibs = "2.1.4"
+kotlin = "2.3.0"
+kotlinxCoroutines = "1.10.1"
+kotlinxSerializationJson = "1.8.0"
+ktlint = "1.4.0"
+okhttp = "4.12.0"
+retrofit = "2.11.0"
+spotless = "8.3.0"
+timber = "5.0.1"
+junit4 = "4.13.2"
+
+[libraries]
+# ---- 构建期插件（仅供 build-logic 的 classpath）----
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle-api", version.ref = "androidGradlePlugin" }
+compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
+
+# ---- AndroidX ----
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom-alpha", version.ref = "androidxComposeBom" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
+androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+
+# ---- Kotlin 官方 ----
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+# ---- 网络（纵切）----
+okhttp-loggingInterceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlinxSerializationConverter = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
+
+# ---- 日志 ----
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+
+# ---- 测试 ----
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+
+[plugins]
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+# convention 插件（注册在 build-logic，随仓库走，版本无意义）
+toolsmith-android-application = { id = "toolsmith.android.application", version = "unspecified" }
+toolsmith-android-application-compose = { id = "toolsmith.android.application.compose", version = "unspecified" }
