@@ -10,7 +10,8 @@ import org.gradle.kotlin.dsl.configure
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            apply(plugin = "com.android.application")
+            // Gradle 9 移除了 PluginAware.apply(map/plugin) 重载，只认 pluginManager
+            pluginManager.apply("com.android.application")
 
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)

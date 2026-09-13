@@ -2,7 +2,6 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.example.toolsmith.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.configure
 
 // 精简自 Now in Android 的 AndroidApplicationComposeConventionPlugin（Apache 2.0）。
@@ -11,7 +10,8 @@ import org.gradle.kotlin.dsl.configure
 class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            apply(plugin = "org.jetbrains.kotlin.plugin.compose")
+            // Gradle 9 移除了 PluginAware.apply(map/plugin) 重载，只认 pluginManager
+            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
             extensions.configure<ApplicationExtension> {
                 configureAndroidCompose(this)
