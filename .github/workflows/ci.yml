@@ -5,6 +5,10 @@ on:
     branches: [main, dev]
   pull_request:
 
+# spotlessApply 自动格式化后要把结果推回仓库
+permissions:
+  contents: write
+
 jobs:
   check:
     # ubuntu runner 预装 Android SDK，无需额外安装步骤
@@ -20,6 +24,20 @@ jobs:
 
       - name: 配置 Gradle 缓存
         uses: gradle/actions/setup-gradle@v5
+
+      # 一次性引导：骨架首跑未过 ktlint，让 CI 自动落格式；
+      # 机器人提交触发的 run 跳过本步，避免无限循环
+      - name: spotlessApply（仅人工推送时）
+        if: github.actor != 'github-actions[bot]'
+        run: ./gradlew --console=plain --no-daemon spotlessApply
+
+      - name: 提交格式化结果（无变化则跳过）
+        if: github.actor != 'github-actions[bot]'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || (git commit -m "style: spotlessApply 自动格式化" && git push)
 
       # 与本地 make check 同一语义：lint → test → build
       - name: 检查与构建
