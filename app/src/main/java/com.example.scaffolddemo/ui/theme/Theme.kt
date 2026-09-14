@@ -10,19 +10,21 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val LightColors = lightColorScheme(
-    primary = Blue600,
-    onPrimary = White,
-    primaryContainer = Gray100,
-    onPrimaryContainer = Gray900,
-)
+private val LightColors =
+    lightColorScheme(
+        primary = Blue600,
+        onPrimary = White,
+        primaryContainer = Gray100,
+        onPrimaryContainer = Gray900,
+    )
 
-private val DarkColors = darkColorScheme(
-    primary = BlueDark,
-    onPrimary = White,
-    primaryContainer = Gray900,
-    onPrimaryContainer = Gray100,
-)
+private val DarkColors =
+    darkColorScheme(
+        primary = BlueDark,
+        onPrimary = White,
+        primaryContainer = Gray900,
+        onPrimaryContainer = Gray100,
+    )
 
 /**
  * Material 3 主题：品牌定制的唯一入口。
@@ -37,14 +39,21 @@ fun AppTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
+
+            darkTheme -> {
+                DarkColors
+            }
+
+            else -> {
+                LightColors
+            }
         }
-        darkTheme -> DarkColors
-        else -> LightColors
-    }
 
     MaterialTheme(
         colorScheme = colorScheme,

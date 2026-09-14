@@ -15,8 +15,12 @@ import timber.log.Timber
  *   DEBUG 调试信息；循环体内不打日志。
  */
 class AppTree : Timber.DebugTree() {
-
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+    override fun log(
+        priority: Int,
+        tag: String?,
+        message: String,
+        t: Throwable?,
+    ) {
         val safeMessage = sanitize(message)
         val safeThrowable = t?.let { "${it.javaClass.simpleName}: ${sanitize(it.message ?: "")}" }
         val full = listOfNotNull(safeMessage, safeThrowable).joinToString(" | ")

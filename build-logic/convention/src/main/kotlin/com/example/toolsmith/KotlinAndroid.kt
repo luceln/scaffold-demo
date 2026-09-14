@@ -18,9 +18,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 internal val Project.libs: VersionCatalog
     get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension,
-) {
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
         compileSdk = 36
 

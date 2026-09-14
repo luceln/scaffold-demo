@@ -18,15 +18,20 @@ import timber.log.Timber
 class DemoRepository(
     private val api: DemoApi,
 ) {
-
     /** 分页查询：失败抛 IOException/HttpException，由调用方决定降级方式 */
-    suspend fun page(start: Int, limit: Int): List<DemoItem> = api.page(start, limit)
+    suspend fun page(
+        start: Int,
+        limit: Int,
+    ): List<DemoItem> = api.page(start, limit)
 
     suspend fun byId(id: Long): DemoItem = api.byId(id)
 
     suspend fun create(item: DemoItem): DemoItem = api.create(item)
 
-    suspend fun update(id: Long, item: DemoItem): DemoItem = api.update(id, item)
+    suspend fun update(
+        id: Long,
+        item: DemoItem,
+    ): DemoItem = api.update(id, item)
 
     /** 删除：2xx 即成功（204/200 都常见），非 2xx 抛 HttpException */
     suspend fun delete(id: Long): Boolean = api.delete(id).isSuccessful
@@ -36,22 +41,26 @@ class DemoRepository(
         const val BASE_URL: String = "https://jsonplaceholder.typicode.com/"
 
         fun create(baseUrl: String = BASE_URL): DemoRepository {
-            val json = Json {
-                ignoreUnknownKeys = true
-                coerceInputValues = true
-            }
-            val http = OkHttpClient.Builder()
-                .addInterceptor(
-                    HttpLoggingInterceptor { message ->
-                        Timber.d(message)
-                    }.apply { level = HttpLoggingInterceptor.Level.BASIC },
-                )
-                .build()
-            val retrofit = Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(http)
-                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-                .build()
+            val json =
+                Json {
+                    ignoreUnknownKeys = true
+                    coerceInputValues = true
+                }
+            val http =
+                OkHttpClient
+                    .Builder()
+                    .addInterceptor(
+                        HttpLoggingInterceptor { message ->
+                            Timber.d(message)
+                        }.apply { level = HttpLoggingInterceptor.Level.BASIC },
+                    ).build()
+            val retrofit =
+                Retrofit
+                    .Builder()
+                    .baseUrl(baseUrl)
+                    .client(http)
+                    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+                    .build()
             return DemoRepository(retrofit.create(DemoApi::class.java))
         }
     }

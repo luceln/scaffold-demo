@@ -1,8 +1,5 @@
 package com.example.scaffolddemo
 
-import com.example.scaffolddemo.data.DemoItem
-import com.example.scaffolddemo.data.DemoRepository
-import com.example.scaffolddemo.ui.theme.AppTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,6 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.scaffolddemo.data.DemoItem
+import com.example.scaffolddemo.data.DemoRepository
+import com.example.scaffolddemo.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +43,6 @@ import timber.log.Timber
  * 新页面照这个形状起手，别用可空标志位组合状态。
  */
 class MainActivity : ComponentActivity() {
-
     private val state = MutableStateFlow<UiState>(UiState.Loading)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,20 +62,25 @@ class MainActivity : ComponentActivity() {
         state.value = UiState.Loading
         val repository = DemoRepository.create()
         CoroutineScope(Dispatchers.Main).launch {
-            state.value = try {
-                UiState.Data(repository.page(start = 0, limit = 20))
-            } catch (e: Exception) {
-                Timber.e(e, "加载 demo 列表失败 url=${DemoRepository.BASE_URL}")
-                UiState.Error
-            }
+            state.value =
+                try {
+                    UiState.Data(repository.page(start = 0, limit = 20))
+                } catch (e: Exception) {
+                    Timber.e(e, "加载 demo 列表失败 url=${DemoRepository.BASE_URL}")
+                    UiState.Error
+                }
         }
     }
 }
 
 private sealed interface UiState {
     data object Loading : UiState
+
     data object Error : UiState
-    data class Data(val items: List<DemoItem>) : UiState
+
+    data class Data(
+        val items: List<DemoItem>,
+    ) : UiState
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,7 +118,10 @@ private fun ErrorView(padding: PaddingValues) {
 }
 
 @Composable
-private fun ListView(padding: PaddingValues, items: List<DemoItem>) {
+private fun ListView(
+    padding: PaddingValues,
+    items: List<DemoItem>,
+) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth().padding(padding),
         contentPadding = PaddingValues(16.dp),

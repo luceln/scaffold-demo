@@ -16,7 +16,6 @@ import retrofit2.http.Query
  * 分页查询 / 按 id 查询 / 新增 / 修改 / 删除。
  */
 interface DemoApi {
-
     @GET("posts")
     suspend fun page(
         @Query("_start") start: Int,
@@ -24,14 +23,23 @@ interface DemoApi {
     ): List<DemoItem>
 
     @GET("posts/{id}")
-    suspend fun byId(@Path("id") id: Long): DemoItem
+    suspend fun byId(
+        @Path("id") id: Long,
+    ): DemoItem
 
     @POST("posts")
-    suspend fun create(@Body item: DemoItem): DemoItem
+    suspend fun create(
+        @Body item: DemoItem,
+    ): DemoItem
 
     @PUT("posts/{id}")
-    suspend fun update(@Path("id") id: Long, @Body item: DemoItem): DemoItem
+    suspend fun update(
+        @Path("id") id: Long,
+        @Body item: DemoItem,
+    ): DemoItem
 
     @DELETE("posts/{id}")
-    suspend fun delete(@Path("id") id: Long): retrofit2.Response<Unit>
+    suspend fun delete(
+        @Path("id") id: Long,
+    ): retrofit2.Response<Unit>
 }
