@@ -1,7 +1,0 @@
-fix(test): 单测编译与断言两处修复
-
-- 裸 kotlin-test 在 AGP 9 内置 Kotlin 下不带 kotlin.test.Test
-  实现，换 kotlin-test-junit（坑 #16）
-- 三条断言漏了 posts 资源段（expected /7，实际 /posts/7）
-- 本地已原样跑通 CI 完整任务清单（spotlessCheck + lintDebug +
-  testDebugUnitTest + assembleDebug，4m9s 全绿）
