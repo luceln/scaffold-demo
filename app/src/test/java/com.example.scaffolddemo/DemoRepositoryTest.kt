@@ -44,7 +44,7 @@ class DemoRepositoryTest {
                 assertEquals("t2", items[1].title)
                 val request = server.takeRequest()
                 assertEquals("GET", request.method)
-                assertEquals("/?_start=10&_limit=2", request.path)
+                assertEquals("/posts?_start=10&_limit=2", request.path)
             } finally {
                 server.shutdown()
             }
@@ -61,7 +61,7 @@ class DemoRepositoryTest {
                 assertEquals("t7", item.title)
                 val request = server.takeRequest()
                 assertEquals("GET", request.method)
-                assertEquals("/7", request.path)
+                assertEquals("/posts/7", request.path)
             } finally {
                 server.shutdown()
             }
@@ -93,7 +93,7 @@ class DemoRepositoryTest {
                 assertEquals("updated", updated.title)
                 val request = server.takeRequest()
                 assertEquals("PUT", request.method)
-                assertEquals("/7", request.path)
+                assertEquals("/posts/7", request.path)
             } finally {
                 server.shutdown()
             }

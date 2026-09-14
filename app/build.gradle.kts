@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.timber)
 
     testImplementation(libs.junit4)
-    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     // 纵切测试的回环 HTTP 服务端：五条 CRUD 路径真打 OkHttp 栈
     testImplementation(libs.okhttp.mockwebserver)
