@@ -1,8 +1,8 @@
 // 仓库选择：CI（海外 runner）直连官方源；本地（国内）镜像前置、官方兜底。
 // 为什么 CI 不走镜像：Gradle 对 404 会落到下一个仓库，但对 5xx（如阿里云偶发 502）
 // 会直接禁用该仓库并整体失败 —— 「官方兜底」只防 404，防不住 502。
-// 判定用 GITHUB_ACTIONS 环境变量；本地想强制官方源可临时改这个布尔。
-val inCi = System.getenv("GITHUB_ACTIONS") == "true"
+// 注意：pluginManagement 块先于脚本主体求值，顶层 val 在块内不可见，
+// 所以这里必须逐块内联 System.getenv(...)，不能抽公共变量（CI run #9 实锤）。
 
 pluginManagement {
     // build-logic 是 composite build：convention 插件的 classpath 从这里进主构建。
@@ -11,7 +11,7 @@ pluginManagement {
     // 而不是在模块里 apply org.jetbrains.kotlin.android（AGP 9 已移除该插件）。
     includeBuild("build-logic")
     repositories {
-        if (!inCi) {
+        if (System.getenv("GITHUB_ACTIONS") != "true") {
             maven("https://maven.aliyun.com/repository/gradle-plugin")
             maven("https://maven.aliyun.com/repository/google")
         }
@@ -30,7 +30,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
-        if (!inCi) {
+        if (System.getenv("GITHUB_ACTIONS") != "true") {
             maven("https://maven.aliyun.com/repository/google")
             maven("https://maven.aliyun.com/repository/public")
         }
