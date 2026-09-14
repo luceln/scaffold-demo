@@ -39,10 +39,12 @@ jobs:
           git add -A
           git diff --staged --quiet || (git commit -m "style: spotlessApply 自动格式化" && git push)
 
-      # 与本地 make check 同一语义：lint → test → build
+      # 单一入口：与本地预检同一条命令。check 自动聚合 spotlessCheck /
+      # lintDebug / testDebugUnitTest（AGP 已把它们挂进 check），不要在这里
+      # 罗列任务清单 —— 任务集合不同＝本地与 CI 的等价性是假的。
       - name: 检查与构建
         run: |
-          ./gradlew --console=plain --no-daemon spotlessCheck :app:lintDebug testDebugUnitTest assembleDebug
+          ./gradlew --console=plain --no-daemon check assembleDebug
 
       # 编译产物上传：run 页 Summary 底部 Artifacts 区下载（保留 90 天，需登录 GitHub）
       - name: 上传 debug APK
