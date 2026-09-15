@@ -12,16 +12,29 @@ androidxActivity = "1.9.3"
 androidxComposeBom = "2025.09.01"
 androidxCore = "1.15.0"
 androidxLifecycle = "2.10.0"
+androidxNavigation = "2.9.8"
 androidDesugarJdkLibs = "2.1.4"
 kotlin = "2.3.0"
 kotlinxCoroutines = "1.10.1"
 kotlinxSerializationJson = "1.8.0"
+koin = "4.2.2"
 ktlint = "1.4.0"
+# miuix（HyperOS 观感 UI 组件库 + 配套图标集），KMP 六端坐标。
+# 取 0.9.3 稳定版，不取 0.9.4-rc01：模板不钉 rc；且 rc 线最贵的那级台阶
+# （minSdk 24）本次已经付掉，将来升上去不会再撞 minSdk，只剩 Kotlin / CMP 版本账。
+# ⚠️ 它自己声明 minCompileSdk=37 ⇒ compileSdk 必须 ≥ 37（见 KotlinAndroid.kt）。
+miuix = "0.9.3"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 spotless = "8.3.0"
 timber = "5.0.1"
 junit4 = "4.13.2"
+# androidx.test（仪器测试基础设施）。版本核实于官方 releases 表（2026-09-15）：
+# ext:junit 稳定版 1.3.0、runner 稳定版 1.7.0。
+# runner 必须**显式**带 —— `testInstrumentationRunner` 按类名加载 AndroidJUnitRunner，
+# 缺它在测试运行期 ClassNotFoundException（构建期不报），见 README 坑 #22。
+androidxTestRunner = "1.7.0"
+androidxTestExtJunit = "1.3.0"
 
 [libraries]
 # ---- 构建期插件（仅供 build-logic 的 classpath）----
@@ -34,15 +47,32 @@ spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plug
 android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom-alpha", version.ref = "androidxComposeBom" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
+# 类型安全导航（@Serializable 路由）：2.9.8 是 2.9 线末版。
+# ⚠️ 坑 #17 的**前提已变**：当初不用 2.10.1 的理由正是"它要 minSdk 24 + compileSdk 37"，
+# 而本片为了 miuix 已把两者都抬到位 ⇒ 2.10.1 现在可升（但需单独一轮验证，本轮不夹带）。
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
+# ---- UI 组件库（miuix · HyperOS 观感）----
+# KMP 坐标，Gradle 元数据自动选 android variant；图标集是独立包，与 miuix-ui 同版本线。
+# 全栈换 miuix 后**不再引 material3 / material-icons-core**：
+# 组件以 miuix 为唯一来源（禁自创基础原子组件），图标以 MiuixIcons.* 为唯一来源，
+# 集里确实缺的语义补在 ui/icon/AppIcons.kt（KDoc 写了新增一枚的三步）。
+miuix-ui = { group = "top.yukonga.miuix.kmp", name = "miuix-ui", version.ref = "miuix" }
+miuix-icons = { group = "top.yukonga.miuix.kmp", name = "miuix-icons", version.ref = "miuix" }
+
+# ---- 依赖注入（Koin）----
+# 版本交给 koin-bom；koin-android 提供 startKoin/androidContext，
+# koin-androidx-compose 提供 koinViewModel()（实测 ViewModelKt.class 在该 AAR 内）
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
 
 # ---- Kotlin 官方 ----
 # JVM 上 kotlin.test 注解由框架适配包提供；AGP 9 内置 Kotlin 没有 KGP 的
-# kotlin-test 自动选框架魔法，裸 kotlin-test 是空壳（坑 #16），必须显式带 -junit
+# kotlin-test 自动选框架魔法，裸 kotlin-test 是空壳（README 坑 #16），必须显式带 -junit
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
@@ -59,6 +89,13 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 
 # ---- 测试 ----
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+
+# ---- 仪器测试（真机 UI 走查截图，见 app/src/androidTest/.../ScreenshotWalkthroughTest.kt）----
+# ui-test-junit4 / ui-test-manifest **不给版本号**：由上面的 compose BOM 统一管。
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
 [plugins]
 # 真实插件：必须在 app 的 plugins 块里显式请求，把实现类拉上主工程

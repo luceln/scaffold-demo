@@ -42,4 +42,8 @@ interface DemoApi {
     suspend fun delete(
         @Path("id") id: Long,
     ): retrofit2.Response<Unit>
+
+    /** 作者表：列表卡片的作者名与详情作者区靠它按 `userId` 映射（骨架的 `/users` 对应项）。 */
+    @GET("users")
+    suspend fun users(): List<DemoUser>
 }

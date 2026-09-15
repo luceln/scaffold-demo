@@ -32,7 +32,7 @@ dependencies {
 gradlePlugin {
     plugins {
         // id 用字面量（NIA 同款）：convention 构建脚本里 catalog 的 plugins
-        // 访问器链不可解析（dependencies 访问器正常）。
+        // 访问器链不可解析（dependencies 访问器正常），见模板 README 坑 #10。
         register("androidApplication") {
             id = "toolsmith.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"

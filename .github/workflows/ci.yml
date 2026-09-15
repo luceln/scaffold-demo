@@ -5,10 +5,6 @@ on:
     branches: [main, dev]
   pull_request:
 
-# spotlessApply 自动格式化后要把结果推回仓库
-permissions:
-  contents: write
-
 jobs:
   check:
     # ubuntu runner 预装 Android SDK，无需额外安装步骤
@@ -25,31 +21,21 @@ jobs:
       - name: 配置 Gradle 缓存
         uses: gradle/actions/setup-gradle@v5
 
-      # 一次性引导：骨架首跑未过 ktlint，让 CI 自动落格式；
-      # 机器人提交触发的 run 跳过本步，避免无限循环
-      - name: spotlessApply（仅人工推送时）
-        if: github.actor != 'github-actions[bot]'
-        run: ./gradlew --console=plain --no-daemon spotlessApply
-
-      - name: 提交格式化结果（无变化则跳过）
-        if: github.actor != 'github-actions[bot]'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --staged --quiet || (git commit -m "style: spotlessApply 自动格式化" && git push)
-
       # 单一入口：与本地预检同一条命令。check 自动聚合 spotlessCheck /
-      # lintDebug / testDebugUnitTest（AGP 已把它们挂进 check），不要在这里
-      # 罗列任务清单 —— 任务集合不同＝本地与 CI 的等价性是假的。
+      # lint / testDevDebugUnitTest / testProdDebugUnitTest（AGP 已把它们挂进 check），
+      # 不要在这里罗列任务清单 —— 任务集合不同＝本地与 CI 的等价性是假的。
+      # 注意：带 flavor 后"按构建类型命名"的聚合任务（lintDebug、testDebugUnitTest）
+      # 已不存在，`check` 才是稳定的入口。
       - name: 检查与构建
         run: |
           ./gradlew --console=plain --no-daemon check assembleDebug
 
       # 编译产物上传：run 页 Summary 底部 Artifacts 区下载（保留 90 天，需登录 GitHub）
-      - name: 上传 debug APK
+      # ⚠️ 路径带 flavor：产物落在 apk/<flavor>/debug/ 下，不再是 apk/debug/。
+      # 用通配一次收齐 dev 与 prod 两个包（少一个都会让 if-no-files-found 报错）。
+      - name: 上传 debug APK（dev + prod）
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: app-debug-apks
+          path: app/build/outputs/apk/*/debug/*.apk
           if-no-files-found: error

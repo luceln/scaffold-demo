@@ -27,8 +27,3 @@ keystore.properties
 # OS
 .DS_Store
 Thumbs.db
-
-# 临时提交消息文件（-F 用，不入库）
-.git-commit-msg.txt
-# Studio 生成的 daemon JVM 锁定（本地专用，入CI库会迫使 foojay 下载 JDK25）
-gradle/gradle-daemon-jvm.properties

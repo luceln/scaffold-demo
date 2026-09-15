@@ -1,24 +1,19 @@
 package com.example.scaffolddemo.data
 
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.kotlinx.serialization.asConverterFactory
-import timber.log.Timber
-
 /**
- * 纵切的数据层出口：手动构造注入（骨架不引 DI 框架 —— 这是应用规模决策，
- * 引入 Hilt/Koin 的时机见 README「扩展路径」）。
+ * 纵切的数据层出口。
  *
- * Retrofit + OkHttp + kotlinx-serialization 的装配样板：
- * 新增网络资源时照本文件与 DemoApi 的形状扩展。
+ * 装配（OkHttp / 序列化 / baseUrl）**已经搬进 DI 容器**（`di/NetworkModule.kt`）——
+ * 这里没有 `create()` 这类手工装配入口，新增网络资源时只加方法。
+ * 这也意味着 baseUrl 由**构建变体**决定（`BuildConfig.BASE_URL`），不在代码里写死。
+ *
+ * 失败语义：抛 `IOException` / `HttpException`，由调用方（ViewModel）决定降级方式，
+ * 统一经 `ui/common/ErrorMapper.kt` 翻译成用户可读文案。
  */
 class DemoRepository(
     private val api: DemoApi,
 ) {
-    /** 分页查询：失败抛 IOException/HttpException，由调用方决定降级方式 */
+    /** 分页查询：`_start` / `_limit` 由数据源侧真切片（mock 拦截器也实现同一套切片）。 */
     suspend fun page(
         start: Int,
         limit: Int,
@@ -36,32 +31,6 @@ class DemoRepository(
     /** 删除：2xx 即成功（204/200 都常见），非 2xx 抛 HttpException */
     suspend fun delete(id: Long): Boolean = api.delete(id).isSuccessful
 
-    companion object {
-        /** 示例 API（公开稳定）。接自己的后端时替换成真实 baseUrl，见 README */
-        const val BASE_URL: String = "https://jsonplaceholder.typicode.com/"
-
-        fun create(baseUrl: String = BASE_URL): DemoRepository {
-            val json =
-                Json {
-                    ignoreUnknownKeys = true
-                    coerceInputValues = true
-                }
-            val http =
-                OkHttpClient
-                    .Builder()
-                    .addInterceptor(
-                        HttpLoggingInterceptor { message ->
-                            Timber.d(message)
-                        }.apply { level = HttpLoggingInterceptor.Level.BASIC },
-                    ).build()
-            val retrofit =
-                Retrofit
-                    .Builder()
-                    .baseUrl(baseUrl)
-                    .client(http)
-                    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-                    .build()
-            return DemoRepository(retrofit.create(DemoApi::class.java))
-        }
-    }
+    /** 作者表：`userId` → 作者名/邮箱 的映射来源。 */
+    suspend fun users(): List<DemoUser> = api.users()
 }

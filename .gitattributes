@@ -1,0 +1,38 @@
+# ============================================================
+# 换行符与文本属性
+#
+# 这一条不只是代码风格 —— 它决定 spotless 检查**跨平台是否一致**：
+# Spotless 的 `lineEndings` 默认取 GIT_ATTRIBUTES，没有 .gitattributes 时会退化成
+# 平台默认（Windows = CRLF、Linux = LF）。于是同一份文件在本机 `spotlessCheck` 红、
+# 在 Linux CI 上绿，红的那一端还完全看不出为什么（整个文件被报成"格式违规"）。
+# 显式声明后两端行为一致，且与 .editorconfig 的 end_of_line = lf 对齐。
+#
+# 二进制文件必须显式标 binary：否则 git 会尝试做换行转换，损坏 jar / 图片。
+# ============================================================
+
+* text=auto eol=lf
+
+# 显式指定语言，保证 GitHub Linguist 统计与 diff 高亮正确
+*.kt        text eol=lf
+*.kts       text eol=lf
+*.md        text eol=lf
+*.xml       text eol=lf
+*.json      text eol=lf
+*.pro       text eol=lf
+*.toml      text eol=lf
+*.yml       text eol=lf
+Makefile    text eol=lf
+gradlew     text eol=lf
+
+# Windows 专用脚本必须保留 CRLF，否则 cmd.exe / PowerShell 解析异常
+*.bat       text eol=crlf
+
+# ---- 二进制：不做换行转换 ----
+*.jar       binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.webp      binary
+*.gif       binary
+*.ico       binary
+*.zip       binary

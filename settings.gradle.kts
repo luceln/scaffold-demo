@@ -1,8 +1,8 @@
 // 仓库选择：CI（海外 runner）直连官方源；本地（国内）镜像前置、官方兜底。
 // 为什么 CI 不走镜像：Gradle 对 404 会落到下一个仓库，但对 5xx（如阿里云偶发 502）
-// 会直接禁用该仓库并整体失败 —— 「官方兜底」只防 404，防不住 502。
-// 注意：pluginManagement 块先于脚本主体求值，顶层 val 在块内不可见，
-// 所以这里必须逐块内联 System.getenv(...)，不能抽公共变量（CI run #9 实锤）。
+// 会直接禁用该仓库并整体失败 —— 「官方兜底」只防 404，防不住 502（README 坑 #14）。
+// 注意：pluginManagement 块先于脚本主体求值，顶层 val 在块内不可见（README 坑 #15），
+// 所以两处仓库块各自内联 System.getenv(...)，不能抽公共变量。
 
 pluginManagement {
     // build-logic 是 composite build：convention 插件的 classpath 从这里进主构建。
@@ -12,6 +12,7 @@ pluginManagement {
     includeBuild("build-logic")
     repositories {
         if (System.getenv("GITHUB_ACTIONS") != "true") {
+            // 插件市场：gradle-plugin 镜像 + google 镜像（AGP 在 google 组）
             maven("https://maven.aliyun.com/repository/gradle-plugin")
             maven("https://maven.aliyun.com/repository/google")
         }

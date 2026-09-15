@@ -20,15 +20,17 @@ internal val Project.libs: VersionCatalog
 
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
-        compileSdk = 36
+        compileSdk = 37
 
         defaultConfig.apply {
-            // 由模板变量渲染：skeleton 里是 23，生成后是字面量
-            minSdk = 23
+            // minSdk 由模板变量渲染（template.yaml 的 min_sdk，取值 24..29），生成后是字面量。
+            // ⚠️ 这是本模板**唯一**渲染进构建脚本的变量：要改 minSdk 就改模板变量，别在这里写死
+            // —— 写死会让 template.yaml 的 pattern / default 变成没人读的空转条款。
+            minSdk = 24
         }
 
         compileOptions.apply {
-            // 产物 bytecode 11 + coreLibraryDesugaring：java.time 等 API 在 minSdk 23 上可用
+            // 产物 bytecode 11 + coreLibraryDesugaring：java.time 等 API 在 minSdk 24 上可用
             sourceCompatibility = JavaVersion.VERSION_11
             targetCompatibility = JavaVersion.VERSION_11
             isCoreLibraryDesugaringEnabled = true

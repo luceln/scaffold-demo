@@ -1,6 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- app_name 由模板变量渲染（kebab-case 原样展示，显示名允许连字符） -->
+    <!-- app_name 由模板变量渲染（kebab-case 原样展示，显示名允许连字符）。
+         ⚠️ dev 变体在 app/build.gradle.kts 里用 resValue 覆盖成「<工程名> dev」⇒ 桌面可区分。
+         这是 flavor 差异的可见证据之一，不做中文化。 -->
     <string name="app_name">scaffold-demo</string>
-    <string name="load_failed">加载失败，请检查网络后重试</string>
+
+    <!-- ============ 外壳（顶栏 / 底栏） ============ -->
+    <string name="tab_home">首页</string>
+    <string name="tab_ability">能力</string>
+    <string name="tab_mine">我的</string>
+    <string name="title_detail">详情</string>
+    <string name="title_search">搜索</string>
+    <string name="title_gallery">组件画廊</string>
+    <string name="title_state_demo">状态管理</string>
+    <string name="title_network_probe">网络实测</string>
+    <string name="action_search">搜索</string>
+    <string name="action_refresh">刷新</string>
+    <string name="action_back">返回</string>
+    <!-- 搜索页展开态的末端动作（miuix SearchBar 的 outsideEndAction 槽） -->
+    <string name="action_cancel">取消</string>
+    <string name="action_retry">重试</string>
+    <string name="action_clear_filter">清除筛选</string>
+
+    <!-- ============ 首页 ============ -->
+    <string name="author_all">全部</string>
+    <string name="home_empty_author">该作者下暂无文章</string>
+    <string name="home_empty">暂无数据</string>
+    <string name="home_avatar_desc">作者头像</string>
+
+    <!-- ============ 统一错误映射（ErrorMapper 的文案与错误码） ============ -->
+    <string name="error_timeout">请求超时，请稍后重试</string>
+    <string name="error_code_timeout">NET-001</string>
+    <string name="error_no_network">网络连接失败，请检查网络后重试</string>
+    <string name="error_code_no_network">NET-002</string>
+    <string name="error_not_found">内容不存在或已被删除</string>
+    <string name="error_code_not_found">HTTP-404</string>
+    <string name="error_server">服务器开小差了，请稍后重试</string>
+    <string name="error_code_server">HTTP-500</string>
+    <string name="error_parse">返回数据解析失败</string>
+    <string name="error_code_parse">DATA-001</string>
+    <string name="error_unknown">出了点问题，请稍后重试</string>
+    <string name="error_code_unknown">ERR-000</string>
+    <!-- 错误卡第二行：错误码 + 补充说明 -->
+    <string name="error_meta_format">错误码 %1$s · %2$s</string>
+    <string name="error_meta_retryable">可重试</string>
+    <string name="error_meta_no_retry">重试也没用，换个入口</string>
+
+    <!-- ============ 详情 ============ -->
+    <string name="detail_action_like">赞</string>
+    <string name="detail_action_star">收藏</string>
+    <string name="detail_action_share">分享</string>
+    <string name="detail_back_to_list">返回列表</string>
+
+    <!-- ============ 搜索 ============ -->
+    <string name="search_hint">搜索文章标题</string>
+    <string name="search_clear">清空</string>
+    <string name="search_hot_label">热门搜索</string>
+    <string name="search_hot_koin">Koin</string>
+    <string name="search_hot_skeleton">骨架</string>
+    <string name="search_hot_navigation">导航</string>
+    <string name="search_hot_flavor">构建变体</string>
+    <string name="search_idle_hint">输入关键词开始搜索（在已加载的 %1$d 篇文章中本地过滤）</string>
+    <string name="search_result_count">找到 %1$d 篇</string>
+    <string name="search_empty_title">没有标题包含「%1$s」的文章</string>
+    <string name="search_change_keyword">换个关键词</string>
+
+    <!-- ============ 能力 tab ============ -->
+    <string name="ability_group_samples">照着抄的样板</string>
+    <string name="ability_group_where">各项能力在哪看</string>
+    <string name="ability_gallery">组件画廊</string>
+    <string name="ability_gallery_desc">标签 / 按钮 / 输入框 / 列表项 / 卡片 / 进度 / 徽标</string>
+    <string name="ability_probe">网络实测</string>
+    <string name="ability_probe_desc">本地 mock ⇄ 真实网络，两条通路对照看</string>
+    <string name="ability_network">网络请求 + 四态</string>
+    <string name="ability_network_desc">首页 tab：骨架屏 → 数据 / 空 / 错误，含统一错误映射</string>
+    <string name="ability_nav">类型安全导航 + 传参</string>
+    <string name="ability_nav_desc">列表 → 详情走 DetailRoute(id)，返回保留滚动与筛选</string>
+    <string name="ability_state">状态管理</string>
+    <string name="ability_state_desc">sealed UiState 四态切换演示</string>
+    <string name="ability_flavor">构建变体 dev / prod</string>
+    <string name="ability_flavor_desc">应用名 / applicationId / BASE_URL / 数据来源 四处差异</string>
+    <string name="ability_p1">宽屏自适应 / 分页 / 深链</string>
+    <string name="ability_p1_desc">本版未做</string>
+    <string name="ability_tag_home">见首页</string>
+    <string name="ability_tag_mine">见我的</string>
+    <string name="ability_tag_p1">P1</string>
+
+    <!-- ============ 组件画廊 ============ -->
+    <!-- ⚠️ 分组标题写的是 **miuix 的组件名**，不是 M3 的：miuix 没有 chip 组件族、
+         Card/Button 各只有一个函数（变体靠容器色 / colors），所以这一屏的清单与 M3 版不同。 -->
+    <string name="gallery_group_tabs">档位切换（TabRow）</string>
+    <string name="gallery_group_button">按钮（主 / 次 / 文本 / 禁用）</string>
+    <string name="gallery_group_field">输入框（TextField）</string>
+    <string name="gallery_group_list">列表项（BasicComponent）</string>
+    <string name="gallery_group_card">卡片底色三档（Card 是单个组件）</string>
+    <string name="gallery_group_progress">进度指示</string>
+    <string name="gallery_group_badge">徽标与分隔线</string>
+    <string name="gallery_tab_all">全部</string>
+    <string name="gallery_tab_follow">关注</string>
+    <string name="gallery_tab_recommend">推荐关注</string>
+    <string name="gallery_tabs_desc">筛选行 / 状态切换都用它：单选 + 横向可滚动，项宽 76–98dp</string>
+    <string name="gallery_btn_save">保存</string>
+    <string name="gallery_btn_cancel">取消</string>
+    <string name="gallery_btn_view_all">查看全部</string>
+    <string name="gallery_field_hint">请输入关键词</string>
+    <string name="gallery_field_filled">已经填好的内容</string>
+    <!-- miuix 的 TextField **没有 supportingText 槽位**：辅助说明/错误提示在下方自己摆一条 Text
+         （别为此自造组件）—— 原来 M3 版把这个槽位当演示项，换库后如实改成说明。 -->
+    <string name="gallery_field_support">miuix 的 TextField 没有 supportingText 槽位：辅助说明在下方用 Text 摆</string>
+    <string name="gallery_list_title">两行列表项</string>
+    <string name="gallery_list_desc">前置图标 + 主文案 + 次文案 + 后置图标</string>
+    <string name="gallery_card_default">默认底色</string>
+    <string name="gallery_card_default_desc">surfaceContainer · 列表默认（首页在用）</string>
+    <string name="gallery_card_high">高一层</string>
+    <string name="gallery_card_high_desc">surfaceContainerHigh · 需要浮起来一点时</string>
+    <string name="gallery_card_highest">最高一层</string>
+    <string name="gallery_card_highest_desc">surfaceContainerHighest · 需要明显分离时</string>
+    <string name="gallery_badge_desc">未读徽标</string>
+
+    <!-- ============ 状态管理演示 ============ -->
+    <string name="state_label_loading">加载中</string>
+    <string name="state_label_empty">空态</string>
+    <string name="state_label_error">失败</string>
+    <string name="state_label_success">成功</string>
+    <string name="state_current_format">当前状态：%1$s · 上面是同一份数据在 4 个状态下的呈现</string>
+    <string name="state_demo_hint_mock">切「空」或「失败」会写入全局 mock 档位：回首页刷新，请求真的返空 / 真的抛出超时。</string>
+    <string name="state_demo_hint_prod">当前构建未启用 mock，本页只演示状态呈现。</string>
+
+    <!-- ============ 网络实测（真出网对照组） ============ -->
+    <string name="probe_seg_mock">本地 mock</string>
+    <string name="probe_seg_real">真实网络</string>
+    <string name="probe_kv_source">数据来源</string>
+    <string name="probe_kv_request">请求</string>
+    <string name="probe_kv_result">结果</string>
+    <string name="probe_source_mock">本地 mock · assets/mock/posts.json</string>
+    <string name="probe_source_real">真实网络 · wanandroid</string>
+    <string name="probe_group_real">实时文章</string>
+    <string name="probe_group_real_desc">来自互联网，不是本地数据</string>
+    <string name="probe_group_mock">本地文章</string>
+    <string name="probe_group_mock_desc">来自 assets，零出网</string>
+    <string name="probe_idle_hint">默认不发请求 —— dev 构建下主链路（首页）零出网，点右上角「请求」才真发一次。</string>
+    <string name="probe_idle_hint_prod">默认不发请求 —— 当前构建未启用 mock，首页与本页「请求」都走真实网络。</string>
+    <string name="probe_action_request">请求</string>
+    <string name="probe_action_requesting">请求中…</string>
+    <string name="probe_mock_disabled">当前构建未启用 mock</string>
+    <string name="probe_meta_format">%1$s · %2$d ms · %3$s · %4$d 条</string>
+    <string name="probe_meta_no_code">未走 HTTP</string>
+    <string name="probe_size_b">%1$d B</string>
+    <string name="probe_size_kb">%1$s KB</string>
+
+    <!-- ============ 我的 tab ============ -->
+    <string name="mine_group_app_info">应用信息（flavor 证据）</string>
+    <string name="mine_label_app_name">应用名</string>
+    <string name="mine_label_application_id">applicationId</string>
+    <string name="mine_label_base_url">BASE_URL</string>
+    <string name="mine_label_data_source">数据来源</string>
+    <string name="mine_label_build_type">构建类型</string>
+    <string name="mine_label_version">版本</string>
+    <string name="mine_data_source_mock">本地 mock · 零出网</string>
+    <string name="mine_data_source_real">真网络栈</string>
+    <string name="mine_build_debug">debug</string>
+    <string name="mine_build_release">release</string>
+    <string name="mine_version_format">%1$s (%2$d)</string>
+    <string name="mine_group_settings">设置</string>
+    <string name="mine_switch_notify">通知</string>
+    <string name="mine_switch_dark">深色模式跟随系统</string>
+    <string name="mine_item_clear_cache">清除缓存</string>
+    <string name="mine_clear_cache_size">当前 0 B</string>
+    <string name="mine_item_about">关于</string>
+    <string name="mine_about_desc">脚手架信息与开源许可</string>
 </resources>
